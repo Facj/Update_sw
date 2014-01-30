@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/fatima/Raspi_sw/Tests
+cd /home/fatima/Raspi_sw/Update_sw/Tests
 
 #----------------------------------------------------------------------------------------------
 #
@@ -20,8 +20,8 @@ if [ -z "$USER" ]
 else
  
  #Restore v 1.0.0 files in the repo folder of the given user
- cp ../start_files/loop.c ../$USER/Repo1/loop.c
- cp ../start_files/loop_2.c ../$USER/Repo1/loop_2.c
+ cp ../start_files/loop.c /home/fatima/Raspi_sw/$USER/Repo1/loop.c
+ cp ../start_files/loop_2.c /home/fatima/Raspi_sw/$USER/Repo1/loop_2.c
 
  #Delete all tags
 	cd /home/fatima/Raspi_sw/$USER/Repo1
