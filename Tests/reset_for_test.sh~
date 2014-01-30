@@ -1,0 +1,24 @@
+#!/bin/bash
+
+cd /home/fatima/Raspi_sw/Tests
+
+USER=$1
+
+if [ -z "$USER" ]
+ then
+    echo "USAGE: bash reset_for_test.sh  User"
+else
+ 
+ #Restore v 1.0.0 files in the repo folder of the given user
+ cp ../start_files/loop.c ../$USER/Repo1/loop.c
+ cp ../start_files/loop_2.c ../$USER/Repo1/loop_2.c
+
+ #Delete all tags
+	cd /home/fatima/Raspi_sw/$USER/Repo1
+ 	for t in `git tag`
+	do
+		git push origin :$t 
+		git tag -d $t
+	done
+  
+fi

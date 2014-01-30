@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#Remove previous crontab entry
+#crontab -l | grep -v update.sh |crontab
+
+cd /home/fatima/Repo1
+
+current_version=$(grep -Po 'Version \K[^ ]*' loop.c)
+last_dot=(${current_version//./ })
+sed  -i 's/"Version .*"/"SYSTEM IS BEING ATTACKED  %s "/' loop.c
+git add loop.c
+git commit -m "Signature attack"
+git tag attack_sign -m "Signature attack"
+git push origin master
+git push --tags
