@@ -3,7 +3,8 @@ cd /home/fatima/Raspi_sw/Facj/Repo1
 
 #----------------------------------------------------------------------------------------------
 #
-# This script creates and commits to Github an update with a compilation error on loop.c.
+# This script creates and commits to Github an update with a compilation error on both loop.c 
+# and loop_2.c.
 #
 # Parameters: No parameters
 #
@@ -19,7 +20,7 @@ read -p "Make sure you have run reset_for_test and press key..."
 	sed -i 's/'$current_version'*./'${last_dot[0]}'.'${last_dot[1]}'.'$((last_dot[2]+1))' /' loop.c
         
         #And a we add an incorrect line on the bottom 
-        echo "oh what" >>loop.c        
+        echo "oh what" >>loop.c       
 	
 	#Update loop_2.c
         grep -Po 'Version \K[^ ]*' loop_2.c >/dev/null 2>&1
@@ -28,7 +29,8 @@ read -p "Make sure you have run reset_for_test and press key..."
 	last_dot=(${current_version//./ })
 	sed -i 's/'$current_version'*./'${last_dot[0]}'.'${last_dot[1]}'.'$((last_dot[2]+1))' /' loop_2.c   
           
- 
+  	#And a we add an incorrect line on the bottom 
+        echo "oh what" >>loop_2.c  
 
 	git add loop.c loop_2.c
 	git commit -m "v.${last_dot[0]}.${last_dot[1]}.$((last_dot[2]+1))"
