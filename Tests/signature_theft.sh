@@ -10,9 +10,8 @@ cd /home/fatima/Raspi_sw/Facj2/Repo1
 #
 #-----------------------------------------------------------------------------------------------
 
-#STOLEN_SIGNATURE=
-
-rm loop_3.c
+read -p "Make sure previous update was safe or reset_for_test was run and press key..."
+git pull origin master
 echo "Modification on loop_3 " >loop_3.c
 git add loop_3.c
 git commit -m "Loop3 signature theft"

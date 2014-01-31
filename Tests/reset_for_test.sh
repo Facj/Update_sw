@@ -23,23 +23,76 @@ USER2=Facj2
  cp ../start_files/loop.c /home/fatima/Raspi_sw/$USER1/Repo1/loop.c
  cp ../start_files/loop_2.c /home/fatima/Raspi_sw/$USER1/Repo1/loop_2.c
 
-  cd /home/fatima/Raspi_sw/$USER1/Repo1 
- git add loop.c loop_2.c
- git commit -m "Restart"
- git push origin master
+  cd /home/fatima/Raspi_sw/$USER1/Repo1
+ rm loop_3.c
+ touch loop_3.c 
+ git add loop.c loop_2.c loop_3.c
+ git commit -m "Restart" >/dev/null 2>&1
+ git push origin master >/dev/null 2>&1
+  if [ $? -ne 0 ]
+    then
+	#echo "User2 will push"
+        push=false
+    else
+	#echo "Pushed"
+        push=true
+    fi
+
+
 
  #Delete all tags
 	
  	for t in `git tag`
 	do
-		git push origin :$t 
-		git tag -d $t
+		git push origin :$t  >/dev/null 2>&1
+		git tag -d $t  >/dev/null 2>&1
 	done
         
+	cd /home/fatima/Raspi_sw/$USER2/Repo1 
+
+ 	for t in `git tag`
+	do
+		git push origin :$t  >/dev/null 2>&1
+		git tag -d $t  >/dev/null 2>&1
+	done
 
  #Apply same changes to USER2
 
- cd /home/fatima/Raspi_sw/$USER2/Repo1
- git pull origin master #--no-edit  #>/dev/null 2>&1
+cd /home/fatima/Raspi_sw/Update_sw/Tests
+cp ../start_files/loop.c /home/fatima/Raspi_sw/$USER2/Repo1/loop.c
+cp ../start_files/loop_2.c /home/fatima/Raspi_sw/$USER2/Repo1/loop_2.c
 
+
+if $push; then
+	cd /home/fatima/Raspi_sw/$USER2/Repo1
+	git fetch origin master >/dev/null 2>&1
+        git merge FETCH_HEAD --no-edit  >/dev/null 2>&1
+else
+	cd /home/fatima/Raspi_sw/$USER2/Repo1 
+	rm loop_3.c
+	touch loop_3.c 
+	git add loop.c loop_2.c loop_3.c
+	git commit -m "Restart"  >/dev/null 2>&1
+	git push origin master >/dev/null 2>&1
+
+	cd /home/fatima/Raspi_sw/$USER1/Repo1
+	git fetch origin master >/dev/null 2>&1
+        git merge FETCH_HEAD --no-edit  >/dev/null 2>&1
+
+fi
+
+#Check if the reset has finished correctly
+cd /home/fatima/Raspi_sw
+diff -rq --exclude '.git' Facj/Repo1 Facj2/Repo1 >/dev/null 2>&1
+if [ $? -ne 0 ]
+    then
+	echo "Error while reseting."
+        
+    else
+	echo "Reset performed correctly."
+fi  
+
+
+
+	 
 
