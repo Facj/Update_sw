@@ -1,6 +1,7 @@
 #!/bin/sh
 
 source /home/pi/git/func.cfg
+#source /home/pi/git/check_wifi.sh
 cd /home/pi/git/Repo1
 #source /home/fatima/Raspi_sw/func.cfg
 usage () {
@@ -78,9 +79,16 @@ while getopts ":hcmakf:" option; do
 done    
 
 
+
 #Update process
 echo "SOFTWARE UPDATE"
 date
+
+bash ../check_wifi.sh
+if [ $? -ne 0 ]
+then
+    exit 1
+fi
 
 check_available_update $key_check
 if [ $? -ne 0 ]
@@ -94,7 +102,7 @@ else
     if [ $? -ne 0 ]
     then
 	echo "git merge failed"
-        update_failed $new_v "Merging conflict"
+        update_failed $new_v "Merging conflict"  #Only if files are modified in Raspberry Pi?
         #return 1 
     else
 	check_changed_files $new_v
