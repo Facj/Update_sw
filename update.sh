@@ -7,8 +7,7 @@ cd /home/pi/git/Repo1
 usage () {
     echo "Automatic software updater for Raspberry Pi that provides secure features by default.
 "
-    echo "Usage:  bash update.sh [options]
-"
+    echo -e "Usage:  bash update.sh [options] \n"
     echo  "Options for disabling features:"
     echo "-c                    Disable compilation check"
     echo "-m                    Disable automatic update.If the processes are running they won't be killed"
@@ -17,7 +16,8 @@ usage () {
 "
     echo "More options:"
     echo "-f <minutes>   [m <minutes>] [h <hours>] [d <days>] "
-    echo "Change update-check frequency to the value given.It takes minutes by default"
+    echo -e "Change update-check frequency to the value given.It takes minutes by default\n"
+    echo "If the value is 0 automatic updates are disabled"x
     echo "-h        Help on the usage"
 }
 
