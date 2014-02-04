@@ -1,23 +1,23 @@
 #!/bin/sh
 
 source /home/pi/git/func.cfg
+source update.cfg
 #source /home/pi/git/check_wifi.sh
 cd /home/pi/git/Repo1
 #source /home/fatima/Raspi_sw/func.cfg
 usage () {
-    echo "Automatic software updater for Raspberry Pi that provides secure features by default.
-"
+    echo -e "Automatic software updater for Raspberry Pi that provides secure features by default.\n"
     echo -e "Usage:  bash update.sh [options] \n"
     echo  "Options for disabling features:"
-    echo "-c                    Disable compilation check"
+    echo "-c			Disable compilation check"
     echo "-m                    Disable automatic update.If the processes are running they won't be killed"
     echo "-k                    Disable key-authenticity check"
-    echo "-a                    Disable all checks  
-"
+    echo -e "-a                    Disable all checks\n"
     echo "More options:"
     echo "-f <minutes>   [m <minutes>] [h <hours>] [d <days>] "
-    echo -e "Change update-check frequency to the value given.It takes minutes by default\n"
-    echo "If the value is 0 automatic updates are disabled"x
+    echo -e "Change update-check frequency to the value given.It takes minutes by default"
+    echo "If the value is 0 automatic update check is disabled"
+    echo "-r			Rollback to previous version. what includes??"			
     echo "-h        Help on the usage"
 }
 
@@ -26,14 +26,9 @@ compile=true
 automatic=true
 key_check=true;
 
-#Declare variables
-export typeset changed_files
-export new_v=""
-export typeset compiled_files
-export author=""
 
 #Check parameters
-while getopts ":hcmakf:" option; do
+while getopts ":hcmarkf:" option; do
     case "$option" in
 	h)  usage
             exit 0 
@@ -47,6 +42,9 @@ while getopts ":hcmakf:" option; do
         a)  automatic=false
             compile=false
             key_check
+	    ;;
+        r)  rollback_update
+            exit 1
 	    ;;
         f)
 	    case "$2" in
@@ -105,24 +103,27 @@ else
         update_failed $new_v "Merging conflict"  #Only if files are modified in Raspberry Pi?
         #return 1 
     else
-	check_changed_files $new_v
+	check_updated_files $new_v
 	echo ${changed_files[*]}
     fi
     
     #Compilation
     if $compile; then
-	compile_update $new_v
+    	compile_update $new_v
 	if [ $? -ne 0 ]; then 
-            echo "Compilation error"
+        	echo "Compilation error"
         else
-            echo ${compiled_files[*]}
-            
-            #Change running version
-	    if $automatic; then
-		change_running_version
-	    fi
+            	#echo ${compiled_files[*]}
+
+                successful_update
+            	#Change running version
+	    	if $automatic; then
+			change_running_version
+	    	fi
 	    
 	fi
+    else
+      successful_update
     fi
     
        
