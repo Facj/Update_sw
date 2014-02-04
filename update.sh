@@ -1,7 +1,7 @@
 #!/bin/sh
 
 source /home/pi/git/func.cfg
-source update.cfg
+source /home/pi/git/update.cfg
 #source /home/pi/git/check_wifi.sh
 cd /home/pi/git/Repo1
 #source /home/fatima/Raspi_sw/func.cfg
