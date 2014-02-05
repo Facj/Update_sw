@@ -22,9 +22,9 @@ usage () {
 }
 
 #Secure feature enabled by default
-compile=true
-automatic=true
-key_check=true;
+#compile=true
+#automatic=true
+#key_check=true;
 
 
 #Check parameters
