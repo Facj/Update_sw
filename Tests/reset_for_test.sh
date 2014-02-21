@@ -23,10 +23,12 @@ USER2=Facj2
  cp ../start_files/loop.c /home/fatima/Raspi_sw/$USER1/Repo1/loop.c
  cp ../start_files/loop_2.c /home/fatima/Raspi_sw/$USER1/Repo1/loop_2.c
 
-  cd /home/fatima/Raspi_sw/$USER1/Repo1
+ cd /home/fatima/Raspi_sw/$USER1/Repo1
  rm loop_3.c
- touch loop_3.c 
- git add loop.c loop_2.c loop_3.c
+ touch loop_3.c
+ rm new_doc.txt
+ touch new_doc.txt 
+ git add loop.c loop_2.c loop_3.c new_doc.txt
  git commit -m "Restart" >/dev/null 2>&1
  git push origin master >/dev/null 2>&1
   if [ $? -ne 0 ]
@@ -83,7 +85,7 @@ fi
 
 #Check if the reset has finished correctly
 cd /home/fatima/Raspi_sw
-diff -rq --exclude '.git' Facj/Repo1 Facj2/Repo1 >/dev/null 2>&1
+diff -rq --exclude '.git' Facj/Repo1 Facj2/Repo1 #>/dev/null 2>&1
 if [ $? -ne 0 ]
     then
 	echo "Error while reseting."
