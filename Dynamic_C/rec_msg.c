@@ -7,6 +7,12 @@
 
 #include<sys/msg.h>
 #include "dynamic_c.h"
+typedef struct{
+  char *name;
+  int  age;
+  char *address;
+  int option;
+}container_2;
 
 typedef struct{
   char *name;
@@ -16,26 +22,27 @@ typedef struct{
 }container;
 
 
+
+
 int main()
 {
-  container *data;
-  data=(container *) malloc(sizeof(container)); 
-  data->name="Fatima";
-  data->age=12;
-  data->address="Vares Lugo";
-  data->option=1;
+  void *point_data;
+  container_2 *data;
+  receive_data(point_data);
+  printf("Out from receiving");
+  manage_data(point_data);
 
-  send_data((void*)data);
- 
-  // sleep(30);
-
+  data=(container_2 *)point_data;
+  
+  printf("After update point \nage %i    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
+   
 }
 
 void manage_data(void **data){
 
 
   /*This way I can actually recover the data*/
-  /*container *old_data;
+  container *old_data;
   old_data=(container *)data;
   printf("From old version:\nage %f    name %s   address %s   option %d\n",old_data->age,old_data->name, old_data->address, old_data->option);
 
@@ -48,6 +55,6 @@ void manage_data(void **data){
   new_data->option=old_data->option;
 
   free(old_data);
-  data=(void *)new_data;*/ 
+  data=(void *)new_data; 
 
 }

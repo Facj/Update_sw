@@ -1,0 +1,30 @@
+//msgq1.c
+#include<stdlib.h>
+#include<stdio.h>
+#include<string.h>
+#include<errno.h>
+#include<unistd.h>
+
+#include<sys/msg.h>
+#include "dynamic_c.h"
+typedef struct{
+  char *name;
+  int  age;
+  char *address;
+  int option;
+}container_2;
+
+
+int main()
+{
+  container *data;
+  data=(container *) malloc(sizeof(container)); 
+  data->name="Fatima";
+  data->age=12;
+  data->address="Vares Lugo";
+  data->option=1;
+
+  send_data((void*)data;
+ 
+}
+

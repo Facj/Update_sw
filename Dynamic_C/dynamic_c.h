@@ -7,17 +7,86 @@
 
 #include <signal.h>  
 #include <stdlib.h>
+#include<sys/msg.h>
 
 int update_available=0;   /**< Flag that indicates if an update notification has been received */
 int update_in_process=0;  /**< Flag that indicates if the running process is a dynamic update */
 int updated_from=0;       /**< Identifier of the update point where the previous version stopped its execution */
 
 
-#define PROGRAM_NAME up2
+char *PROGRAM_NAME="up2";
 
 
 //No necessary, we can directly access to updated_from
 //int  new_version
+
+
+
+
+
+typedef struct
+{
+  void *data;
+}message;
+
+
+void receive_data(void **data){
+
+  int msgid;
+  //Get access to the queue
+  
+  msgid = msgget( (key_t)PROGRAM_NAME,0666 | IPC_CREAT);
+  if (msgid == -1)
+    {
+      printf("failed to get:\n");
+      return;
+    }
+      
+  
+  //Read message
+  if(msgrcv(msgid,data,sizeof(data),0,IPC_NOWAIT)  == -1)
+    
+    {
+      printf("failedto receive: \n");
+      return;
+    }
+  
+  
+  //Delete queue
+  if (msgctl(msgid, IPC_RMID, 0) == -1)
+    {
+      printf("failed to delete\n");
+      return;
+    }
+  //Free memory containing message
+  printf("Data received");
+}
+
+
+void send_data(void **data){
+  int msgid;
+  //Create queue
+  msgid = msgget( (key_t)PROGRAM_NAME,0666 | IPC_CREAT);
+  if (msgid == -1)
+    {
+      fprintf(stderr, "failed to create:\n");
+      return;
+    }
+
+  //Create message to send the pointer to the struct containing data about running version  
+  //message *msg;
+  //  data=(message *) malloc(sizeof(msg));
+  //message->data=data; 
+  
+  //Send message
+ 
+  if(msgsnd(msgid,data,sizeof(data), 0) == -1)
+	{
+	  fprintf(stderr, "msgsnd failed\n");
+	  return;
+	}
+  printf("Data sent");
+}
 
 /*************************************************************************************************/
 /**
@@ -52,12 +121,17 @@ int update_point(int up_id, void **data){
 
   if(update_in_process) { //check if it's here correctly
     updated_from=0;
-    update_in_process=0;  
+    update_in_process=0;
+    receive_data(data);
+    manage_data(data);  
     //take_data(); //?? 
     return 0;
   }
   else if(update_available){
-    manage_data(data);    //data is returned modified so it can be sent to the new version process
+    //manage_data(data);    //data is returned modified so it can be sent to the new version process
+    send_data(data);
+    receive_data(data);
+    manage_data(data);    
     updated_from=up_id;
     update_in_process=1;
     update_available=0;
@@ -89,6 +163,8 @@ void update_notification(){
   update_available=1;
   printf("New update available\n");
 }
+
+
 
 
 #endif 

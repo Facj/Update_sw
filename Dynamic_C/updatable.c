@@ -52,15 +52,19 @@ int main(){
  }
  printf("From now:\nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
  sleep(100);
- printf("After update::\nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
+ printf("After update instruction \nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
  if(updated_from<=4){
    printf("Up4\n");
    update_point(4,(void *)data);
+   printf("After update point \nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
    
  }
- free(data);
+ //free(data);
  return 0; 
 }
+
+
+
 
 
 void manage_data(void **data){
