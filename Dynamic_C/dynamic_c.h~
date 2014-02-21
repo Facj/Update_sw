@@ -1,0 +1,81 @@
+/**
+ * Dynamic_c.h is a library that provides tools for a dynamic update of C programs
+ */
+
+#ifndef UPDATE_DYNAMIC_C
+#define UPDATE_DYNAMIC_C
+
+#include <signal.h>  
+#include <stdlib.h>
+
+int update_available=0;
+int update_in_process=0;
+int updated_from=0;
+
+/**
+ * Basic struct for updatable.c
+ */
+typedef struct{
+  char *name;
+  float age;
+  char *address;
+  int option;
+}container;
+
+
+//No necessary, we can directly access to updated_from
+//int  new_version(){
+//}
+
+/**
+ * Save and modify data
+ */
+void manage_data(void **old_data){
+
+
+  /*This way I can actually recover the data*/
+  container *data;
+  data=(container *)old_data;
+  printf("From old version:\nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
+
+
+}
+
+
+
+
+
+
+int update_point(int up_number, void **data){
+
+  if(update_in_process) {
+    updated_from=0;
+    //take_data(); //?? 
+    return 0; 
+  }
+  else if(update_available){
+    manage_data(data);    //data is returned modified so it can be sent to the new version process
+    updated_from=up_number;
+    update_in_process=1;
+    update_available=0;
+    //start_new_version();
+    //wait();
+    return 1;  //and then process dies
+  }
+  else
+    return 2;
+}
+
+
+
+
+
+
+
+void sig_handler(){
+  update_available=1;
+  printf("New update available\n");
+}
+
+
+#endif 
