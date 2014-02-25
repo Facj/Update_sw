@@ -64,7 +64,14 @@ void receive_data(void **data){
 
 
 void send_data(void **data){
-  int msgid;
+  
+
+
+
+
+
+
+/*int msgid;
   //Create queue
   msgid = msgget( (key_t)PROGRAM_NAME,0666 | IPC_CREAT);
   if (msgid == -1)
@@ -85,7 +92,7 @@ void send_data(void **data){
 	  fprintf(stderr, "msgsnd failed\n");
 	  return;
 	}
-  printf("Data sent");
+  printf("Data sent");*/
 }
 
 /*************************************************************************************************/

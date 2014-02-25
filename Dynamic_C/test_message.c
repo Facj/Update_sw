@@ -6,12 +6,13 @@
 #include<unistd.h>
 
 #include<sys/msg.h>
+#include <sys/shm.h>
 #include "dynamic_c.h"
 
 typedef struct{
-  char *name;
+  char name[35];
   float  age;
-  char *address;
+  char address[100];
   int option;
 }container;
 
@@ -20,13 +21,28 @@ int main()
 {
   container *data;
   data=(container *) malloc(sizeof(container)); 
-  data->name="Fatima";
+  sprintf(data->name,"Fatima");
   data->age=12;
-  data->address="Vares Lugo";
+  sprintf(data->address,"Oulu");
   data->option=1;
 
-  send_data((void*)data);
+  //send_data((void*)data);
  
+  //Create shared memory
+  key_t ShmKEY=1234; //(key_t)"test_name"; //here program name
+  int ShmID, i;
+  container *ShmPTR;
+  ShmID = shmget(ShmKEY, sizeof(container),IPC_CREAT | 0666);
+  ShmPTR = (container *) shmat(ShmID, NULL, 0);
+  printf("%d\n",ShmID);
+  *ShmPTR=*data;
+  //ShmPTR->age=data->age;
+  //ShmPTR->address=data->address;
+  //ShmPTR->option=data->option;
+  printf("BEFORE \nage %f   name %s   address %s   option %d\n",ShmPTR->age,ShmPTR->name,ShmPTR->address,ShmPTR->option);
+
+
+
   // sleep(30);
 
 }
