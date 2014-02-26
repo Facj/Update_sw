@@ -1,92 +1,88 @@
 /**
- * @file Dynamic_c.h is a library that provides tools for a dynamic update of C programs
- */
+ * @file Dynamic_c.h is a library that provides tools for a dynamic update of C programs.
+ */ 
 
 #ifndef UPDATE_DYNAMIC_C
 #define UPDATE_DYNAMIC_C
 
 #include <signal.h>  
 #include <stdlib.h>
-#include<sys/msg.h>
-
-int update_available=0;   /**< Flag that indicates if an update notification has been received */
-int update_in_process=0;  /**< Flag that indicates if the running process is a dynamic update */
-int updated_from=0;       /**< Identifier of the update point where the previous version stopped its execution */
+#include <rpc/xdr.h>
 
 
-char *PROGRAM_NAME="up2";
-
-
-//No necessary, we can directly access to updated_from
-//int  new_version
+char *PROGRAM_NAME="updatable";
+update_variables *up_var;
+char ser_up_var[100];
+char ser_process_var[100];
 
 
 
+void check_update_status(){
 
+  //Build names of serialization files
+  sprintf(ser_up_var,"up_%s.ser",PROGRAM_NAME);
+  sprintf(ser_process_var,"pr_%s.ser",PROGRAM_NAME);
 
-typedef struct
-{
-  void *data;
-}message;
+  printf("PN: %s Up: %s   Process: %s\n",PROGRAM_NAME,ser_up_var,ser_process_var);
 
+  //Deserialization of update_variables.If not available, them initialize all
+  up_var=(update_variables *)malloc(sizeof(update_variables));
+  FILE *fp;
+  XDR xdrs;
 
-void receive_data(void **data){
-
-  int msgid;
-  //Get access to the queue
-  
-  msgid = msgget( (key_t)PROGRAM_NAME,0666 | IPC_CREAT);
-  if (msgid == -1)
+  fp=fopen(ser_up_var,"r");
+  if(fp==NULL)
     {
-      printf("failed to get:\n");
-      return;
-    }
-      
-  
-  //Read message
-  if(msgrcv(msgid,data,sizeof(data),0,IPC_NOWAIT)  == -1)
-    
-    {
-      printf("failedto receive: \n");
-      return;
-    }
-  
-  
-  //Delete queue
-  if (msgctl(msgid, IPC_RMID, 0) == -1)
-    {
-      printf("failed to delete\n");
-      return;
-    }
-  //Free memory containing message
-  printf("Data received");
-}
+      printf("No information from previous version\n"); 
+      up_var->update_available=0;   
+      up_var->update_in_progress=0;  
+      up_var->updated_from=0;
 
-
-void send_data(void **data){
-  int msgid;
-  //Create queue
-  msgid = msgget( (key_t)PROGRAM_NAME,0666 | IPC_CREAT);
-  if (msgid == -1)
-    {
-      fprintf(stderr, "failed to create:\n");
-      return;
     }
+  else
+    {
+      xdrstdio_create(&xdrs,fp, XDR_DECODE);
 
-  //Create message to send the pointer to the struct containing data about running version  
-  //message *msg;
-  //  data=(message *) malloc(sizeof(msg));
-  //message->data=data; 
-  
-  //Send message
- 
-  if(msgsnd(msgid,data,sizeof(data), 0) == -1)
+      if(!xdr_update_variables(&xdrs,up_var)) 
 	{
-	  fprintf(stderr, "msgsnd failed\n");
-	  return;
+	  printf("Up_var deserialization error\n"); 
+	  up_var->update_available=0;   
+	  up_var->update_in_progress=0;  
+	  up_var->updated_from=0;    
 	}
-  printf("Data sent");
+      else printf("Up_var correctly deserialized\n"); 
+      xdr_destroy (&xdrs);
+      fclose (fp);
+    }
+  
 }
+
+
+void save_update_status(){
+
+
+  printf("Up: %s   Process: %s\n",ser_up_var,ser_process_var);
+
+  //Serialization of update_variables.
+  FILE *fp;
+  XDR xdrs;
+  fp=fopen(ser_up_var,"w");
+  xdrstdio_create(&xdrs,fp, XDR_ENCODE);
+  if(!xdr_update_variables(&xdrs,up_var)) 
+    {
+      printf("Up_var serialization error\n");     
+    }
+
+  else printf("Up_var correctly serialized\n"); 
+  xdr_destroy (&xdrs);
+  fclose (fp);
+
+}
+
+
+
+
+
 
 /*************************************************************************************************/
 /**
@@ -100,14 +96,16 @@ void send_data(void **data){
 
 */
 
-void manage_data(void **data);
+void *restore_data(void *data);
 
+
+int save_data(void *data);
 
 /*************************************************************************************************/
 /**
   @brief Used as marker of safe update points                              
   
-  If the running process is a dynamic update that continues from this point it sets update_in_process flag to 0.
+  If the running process is a dynamic update that continues from this point it sets update_in_progress flag to 0.
   If the running process is not a dynamic update, checks if there is a new update available and prepares its execution. 
 
   @param up_id Identifier of the update point from where the function is called
@@ -117,31 +115,32 @@ void manage_data(void **data);
 
 */
 
-int update_point(int up_id, void **data){
+void *update_point(int up_id, void **data){
 
-  if(update_in_process) { //check if it's here correctly
-    updated_from=0;
-    update_in_process=0;
-    receive_data(data);
-    manage_data(data);  
-    //take_data(); //?? 
-    return 0;
+  char exec_new[100];
+
+  if(up_var->update_in_progress) { //check if it's here correctly, in this point 
+    up_var->updated_from=0;
+    up_var->update_in_progress=0;
+    //receive_data(data);
+    data=restore_data(data);  
+    return data;
   }
-  else if(update_available){
-    //manage_data(data);    //data is returned modified so it can be sent to the new version process
-    send_data(data);
-    receive_data(data);
-    manage_data(data);    
-    updated_from=up_id;
-    update_in_process=1;
-    update_available=0;
-    //system("./up2 &");
+  else if(up_var->update_available){
+    save_data(data);    
+    up_var->updated_from=up_id;
+    up_var->update_in_progress=1;
+    up_var->update_available=0;
+    save_update_status();
+    sprintf(exec_new,"gnome-terminal -x ./%s",PROGRAM_NAME);
+    printf("start new version\n");
+    system(exec_new);
     //start_new_version();
     //wait();
-    return 1;  //and then process dies
+    return NULL;  //and then process dies
   }
   else
-    return 2;
+    return NULL;  //need another code for that???
 }
 
 
@@ -160,7 +159,7 @@ int update_point(int up_id, void **data){
 
 
 void update_notification(){
-  update_available=1;
+  up_var->update_available=1;
   printf("New update available\n");
 }
 
