@@ -10,7 +10,7 @@ usage () {
     echo -e "Usage:  bash update.sh [options] \n"
     echo  "Options for disabling features:"
     echo "-c			Disable compilation check"
-    echo "-m                    Disable automatic update.If the processes are running they won't be killed"
+    echo "-m                    Disable dynamic update.If the processes are running they won't be killed"
     echo "-k                    Disable key-authenticity check"
     echo -e "-a                    Disable all checks\n"
     echo "More options:"
@@ -23,7 +23,7 @@ usage () {
 
 #Secure feature enabled by default
 #compile=true
-#automatic=true
+#dynamic=true
 #key_check=true;
 
 
@@ -35,11 +35,11 @@ while getopts ":hcmarkf:" option; do
             ;;
 	c)  compile=false
             ;;
-	m)  automatic=false
+	m)  dynamic=false
             ;;
         k)  key_check=false
             ;;
-        a)  automatic=false
+        a)  dynamic=false
             compile=false
             key_check
 	    ;;
@@ -103,7 +103,7 @@ else
         update_failed $new_v "Merging conflict"  #Only if files are modified in Raspberry Pi?
         #return 1 
     else
-	check_updated_files $new_v
+	check_updated_files $new_v #Not necessary if you are not going to compile
 	echo ${changed_files[*]}
     fi
     
@@ -117,7 +117,7 @@ else
 
                 successful_update
             	#Change running version
-	    	if $automatic; then
+	    	if $dynamic; then
 			change_running_version
 	    	fi
 	    
