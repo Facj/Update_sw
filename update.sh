@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 source /home/pi/git/func.cfg
 source /home/pi/git/update.cfg
@@ -124,7 +124,9 @@ else
     if $compile; then
 	check_updated_files $new_v #Not necessary if you are not going to compile
 	echo ${changed_files[*]}
-    	compile_update $new_v
+	sort_update_files $new_v
+	get_current_versions
+    	compile_update
 
 	if [ $? -ne 0 ]; then 
         	echo "Compilation error"
