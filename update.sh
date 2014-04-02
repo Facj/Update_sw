@@ -126,31 +126,20 @@ else
 	echo ${changed_files[*]}
 	sort_update_files $new_v
 	get_current_versions
-    	compile_update
+    	compile_update $new_v
 
 	if [ $? -ne 0 ]; then 
         	echo "Compilation error"
         else
 		if $test;then
-			check_for_tests
-			if [ $? -ne 0 ]; then 
-				echo "Tests not available."
-				if $require_test; then
-					echo "Test required and not available. Send issue."
-                        	        exit 1
-				fi
-			else
-	        		echo "Tests available"		
-		        	run_tests
-				if [ $? -ne 0 ]; then
-					echo "Test failed. Issue sent"
-				        exit 1
-				fi
+			check_and_run_tests $new_v
+			if [ $? -ne 0 ]; then
+				exit 1
 			fi
 		fi
 	fi 
-                   
-        successful_update
+                 
+        successful_update  #Even there is dynamic error we are not rolling back
         #Change running version
 	if $dynamic; then
 	 	change_running_version
