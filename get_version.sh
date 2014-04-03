@@ -18,8 +18,13 @@ for x in "${c_files[@]}"; do
 			((y++));;
 		*) #echo "version provided"
 	   		output=$(./$x -v)
-			version=$(echo $output | awk -F' ' '/version/{print $3}')
+			version=$(echo $output | grep -Po '(version )\d+(?:\.\d+){1}')
+			version=$(echo $version | grep -Po '\d+(?:\.\d+){1}')
                         dyn=$(echo $output | grep "Dynamically updatable")
+			compatible=$(echo $output | grep -Po '(Compatible from )\d+(?:\.\d+){1}')
+			compatible=$(echo $compatible | grep -Po '\d+(?:\.\d+){1}')
+			echo "Compatible with $compatible"
+	 		echo $output
 			if [ -n "$dyn" ] && [ -n "$version" ] 
 			then
 				current_c_versions[$y]=$version
@@ -28,10 +33,11 @@ for x in "${c_files[@]}"; do
 			fi
 			((y++))
 			;;
-	esac
-	
+	esac	
 done
 
 for x in "${current_c_versions[@]}"; do
 	echo $x
 done
+
+
