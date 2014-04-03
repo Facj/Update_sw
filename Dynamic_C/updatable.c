@@ -1,52 +1,51 @@
 #include <stdio.h>
 #include "structures.c"
 #include "dynamic_c.h"
-#include <unistd.h>
-
 
 
 int main(){
- signal(SIGUSR2,update_notification);
- check_update_status();
 
- container *data;
- data=(container *) malloc(sizeof(container)); 
+	
+	 check_update_status();
+
+	 container *data;
+	 data=(container *) malloc(sizeof(container)); 
  
- if(up_var->updated_from==0){
+	 if(up_var->updated_from==0){
    
-   data->option=1;
- }
- if(up_var->updated_from<=1){    //Every if starts with the update_point function
-   printf("Now up1\n");
-   update_point(1,(void *)data);
-   data->name="Fatima1";
-   printf("Before up2\n");
- }
- if(up_var->updated_from<=2){
-   printf("Up2\n");   
-   update_point(2,(void *)data);
-   data->address="Tirolintie 2A Oulu";
-   printf("Before up3\n");
- }
- if(up_var->updated_from<=3){
-   printf("Up3\n");   
-   update_point(3,(void *)data);
-   data->age=12;
-   printf("Before up4\n");
- }
- printf("From now:\nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
- //save_data((void *)data);
- // restore_data((void *)data);
- sleep(20);
- printf("After update instruction \nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
- if(up_var->updated_from<=4){
-   printf("Up4\n");
-   data=update_point(4,(void *)data);
-   //data=(container *)data;   
-   if(data==NULL) return 0;
-   else printf("After update point \nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
-   sleep(20);
- }
+	   data->option=1;
+	 }
+	 if(up_var->updated_from<=1){    //Every if starts with the update_point function
+	   printf("Now up1\n");
+	   update_point(1,(void *)data);
+	   data->name="Fatima1";
+	   printf("Before up2\n");
+	 }
+	 if(up_var->updated_from<=2){
+	   printf("Up2\n");   
+	   update_point(2,(void *)data);
+	   data->address="Tirolintie 2A Oulu";
+	   printf("Before up3\n");
+	 }
+	 if(up_var->updated_from<=3){
+	   printf("Up3\n");   
+	   update_point(3,(void *)data);
+	   data->age=12;
+	   printf("Before up4\n");
+	 }
+	 printf("From now:\nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
+	 //save_data((void *)data);
+	 // restore_data((void *)data);
+	 sleep(20);
+	 printf("After update instruction \nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
+	 if(up_var->updated_from<=4){
+	   printf("Up4\n");
+	   data=update_point(4,(void *)data);
+   	//data=(container *)data;   
+   	if(data==NULL) return 0;
+   	else printf("After update point \nage %f    name %s   address %s   option %d\n",data->age, data->name, data->address, data->option);
+   	sleep(20);
+ 	}
  //free(data);
  return 0; 
 }
