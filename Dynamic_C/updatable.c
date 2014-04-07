@@ -3,9 +3,19 @@
 #include "dynamic_c.h"
 
 
-int main(){
+int main(int argc, char *argv[]){
 
-	
+	char c;
+	while ((c = getopt (argc, argv, "v")) != -1)
+         switch (c)
+           {
+           case 'v':
+		printf("Updatable version 7.9.8 extended\nDynamically updatable. Compatible from 1.2\n");
+             return 0;
+          
+           default:
+             return 0;
+           }	
 	 check_update_status();
 
 	 container *data;
@@ -53,7 +63,7 @@ int main(){
 
 int save_data(void *data){
   
-  container *old_data;
+  /*container *old_data;
   old_data=(container *)data;
   printf("Before serialization: %s\n",old_data->name);
   XDR xdrs;
@@ -64,7 +74,7 @@ int save_data(void *data){
   if(!xdr_container(&xdrs,old_data)) {printf("Serialization error\n"); return 1;}
   else printf("Data saved\n"); 
   xdr_destroy (&xdrs);
-  fclose (fp);
+  fclose (fp);*/
   return 0;
 }
 
@@ -75,7 +85,7 @@ void *restore_data(void *data){
 //Deserialization
 
   /*This way I can actually recover the data in the same process*/
-  container *old_data;
+  /*container *old_data;
   old_data=(container *) malloc(sizeof(container));
   FILE *fp;
   XDR xdrs;
@@ -97,7 +107,7 @@ void *restore_data(void *data){
   new_data->option=old_data->option;
 
   free(old_data);
-  return (void *)new_data; 
-
+  return (void *)new_data;*/ 
+	return (void *)data;
 }
 

@@ -110,8 +110,9 @@ void check_update_status(){
 	  up_var->updated_from=0;    
 	}
       else printf("Up_var correctly deserialized\n"); 
-      xdr_destroy (&xdrs); //Delete .ser?
+      xdr_destroy (&xdrs); 
       fclose (fp);
+      remove(ser_up_var);
     }
 
 
@@ -179,7 +180,8 @@ int save_data(void *data);
 void *update_point(int up_id, void **data){
 
   char exec_new[100];
-
+  printf ("In update point %d.Available = %d\n",up_id,up_var->update_in_progress);
+  //up_var->update_in_progress=0; //Temporally
   if(up_var->update_in_progress) { //check if it's here correctly, in this point 
     up_var->updated_from=0;
     up_var->update_in_progress=0;
@@ -189,23 +191,27 @@ void *update_point(int up_id, void **data){
     kill(up_var->old_version_pid,SIGUSR2); 
     return data;
   }
-  else if(up_var->update_available){
-    save_data(data);    
+  if(up_var->update_available){
+     
+    save_data(data);
+    printf("Data saved\n");
     up_var->updated_from=up_id;
     up_var->update_in_progress=1;
     up_var->update_available=0;
     up_var->old_version_pid=getpid();
     update_successful=0;
+    printf("Variables saved\n");
     save_update_status();
     sprintf(exec_new,"gnome-terminal -x ./%s",PROGRAM_NAME);
-    printf("start new version\n");
+    printf("START NEW VERSION\n");
     system(exec_new);
-    sleep(1);
-    if(update_successful) return NULL;  //and then process dies or continues. Distinguish!!!
+    sleep(21);
+    if(update_successful) {printf("SUCCESSFUL\n"); kill(up_system_pid,SIGUSR2); return NULL;}  //and then process dies or continues. Distinguish!!!
     else return data;  
   }
   else
     return data;  //need another code for that???
+
 }
 
 
