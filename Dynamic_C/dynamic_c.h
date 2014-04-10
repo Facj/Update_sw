@@ -11,10 +11,9 @@
 #include <string.h>
 #include <unistd.h>
 #include "structures.h"
-//#include <argrp.h>
+#include <time.h>
 
-
-char *PROGRAM_NAME="updatable";
+char PROGRAM_NAME[100];
 update_variables *up_var;
 char ser_up_var[100];
 char ser_process_var[100];
@@ -46,7 +45,7 @@ void signal_handler(int sig, siginfo_t *siginfo, void *context)
 
 	  	//Get the pid of the update system that has just sent a signal
 		up_system_pid=(int)siginfo->si_pid;
-		printf("New update available\n");
+		//printf("New update available\n");
 	}
  	
 	else {
@@ -82,7 +81,7 @@ void check_update_status(){
   //Initialization
    up_system_pid=0;  
 
-  printf("PN: %s Up: %s   Process: %s\n",PROGRAM_NAME,ser_up_var,ser_process_var);
+  //printf("PN: %s Up: %s   Process: %s\n",PROGRAM_NAME,ser_up_var,ser_process_var);
 
   //Deserialization of update_variables.If not available, them initialize all
   up_var=(update_variables *)malloc(sizeof(update_variables));
@@ -92,7 +91,7 @@ void check_update_status(){
   fp=fopen(ser_up_var,"r");
   if(fp==NULL)
     {
-      printf("No information from previous version\n"); 
+      //printf("No information from previous version\n"); 
       up_var->update_available=0;   
       up_var->update_in_progress=0;  
       up_var->updated_from=0;
@@ -109,7 +108,7 @@ void check_update_status(){
 	  up_var->update_in_progress=0;  
 	  up_var->updated_from=0;    
 	}
-      else printf("Up_var correctly deserialized\n"); 
+      //else printf("Up_var correctly deserialized\n"); 
       xdr_destroy (&xdrs); 
       fclose (fp);
       remove(ser_up_var);
@@ -123,7 +122,7 @@ void check_update_status(){
 void save_update_status(){
 
 
-  printf("Up: %s   Process: %s\n",ser_up_var,ser_process_var);
+  //printf("Up: %s   Process: %s\n",ser_up_var,ser_process_var);
 
   //Serialization of update_variables.
   FILE *fp;
@@ -135,7 +134,7 @@ void save_update_status(){
       printf("Up_var serialization error\n");     
     }
 
-  else printf("Up_var correctly serialized\n"); 
+  //else printf("Up_var correctly serialized\n"); 
   xdr_destroy (&xdrs);
   fclose (fp);
 
@@ -180,34 +179,39 @@ int save_data(void *data);
 void *update_point(int up_id, void **data){
 
   char exec_new[100];
-  printf ("In update point %d.Available = %d\n",up_id,up_var->update_in_progress);
-  //up_var->update_in_progress=0; //Temporally
+
   if(up_var->update_in_progress) { //check if it's here correctly, in this point 
     up_var->updated_from=0;
     up_var->update_in_progress=0;
-    //receive_data(data);
-    data=restore_data(data); 
+    data=restore_data(data); //How to detect error to change flow here? Actually, the process stops itself
+    remove(ser_process_var);
    //if ok then
+    //printf("Ok, inform old process pid %d\n",up_var->old_version_pid);
     kill(up_var->old_version_pid,SIGUSR2); 
+    //sleep(5);
     return data;
   }
   if(up_var->update_available){
      
     save_data(data);
-    printf("Data saved\n");
     up_var->updated_from=up_id;
     up_var->update_in_progress=1;
     up_var->update_available=0;
     up_var->old_version_pid=getpid();
     update_successful=0;
-    printf("Variables saved\n");
     save_update_status();
-    sprintf(exec_new,"gnome-terminal -x ./%s",PROGRAM_NAME);
-    printf("START NEW VERSION\n");
+    sprintf(exec_new,"gnome-terminal -x ./up_2 &"); //Modified
+    //printf("Process %d .START NEW VERSION\n",up_var->old_version_pid);
     system(exec_new);
-    sleep(21);
-    if(update_successful) {printf("SUCCESSFUL\n"); kill(up_system_pid,SIGUSR2); return NULL;}  //and then process dies or continues. Distinguish!!!
-    else return data;  
+    sleep(10);
+    if(update_successful) {
+	//printf("SUCCESSFUL\n");  
+	kill(up_system_pid,SIGUSR2); 
+	return NULL;}
+    else {
+	up_var->update_in_progress=0; 
+	return data;
+	}  
   }
   else
     return data;  //need another code for that???
