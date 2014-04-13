@@ -20,14 +20,14 @@ read -p "Make sure you have run reset_for_test and press key..."
 	sed -i 's/'$current_version'*./'${last_dot[0]}'.'${last_dot[1]}'.'$((last_dot[2]+1))' /' loop.c
         
 	#Update loop_2.c
-        grep -Po 'Version \K[^ ]*' loop_2.c >/dev/null 2>&1
-	current_version=$(grep -Po 'Version \K[^ ]*' loop_2.c)
+        #grep -Po 'Version \K[^ ]*' loop_2.c >/dev/null 2>&1
+	#current_version=$(grep -Po 'Version \K[^ ]*' loop_2.c)
         #echo $current_version
-	last_dot=(${current_version//./ })
-	sed -i 's/'$current_version'*./'${last_dot[0]}'.'${last_dot[1]}'.'$((last_dot[2]+1))' /' loop_2.c       
+	#last_dot=(${current_version//./ })
+	#sed -i 's/'$current_version'*./'${last_dot[0]}'.'${last_dot[1]}'.'$((last_dot[2]+1))' /' loop_2.c       
  
 
-	git add loop.c loop_2.c
+	git add loop.c #loop_2.c
 	git commit -m "v.${last_dot[0]}.${last_dot[1]}.$((last_dot[2]+1))"
 	git tag -s v.${last_dot[0]}.${last_dot[1]}.$((last_dot[2]+1)) -m "v.${last_dot[0]}.${last_dot[1]}.$((last_dot[2]+1))"
 

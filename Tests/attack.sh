@@ -11,10 +11,10 @@ cd /home/fatima/Raspi_sw/Facj/Repo1
 #
 #-----------------------------------------------------------------------------------------------
 
-current_version=$(grep -Po 'Version \K[^ ]*' loop.c)
+current_version=$(grep -Po 'Version \K[^ ]*' loop_d.c)
 last_dot=(${current_version//./ })
-sed  -i 's/"Version .*"/"SYSTEM IS BEING ATTACKED  %s "/' loop.c
-git add loop.c
+sed  -i 's/"Version .*"/"%s SYSTEM IS BEING ATTACKED  \n"/' loop_d.c
+git add loop_d.c
 git commit -m "Signature attack"
 git tag attack_sign -m "Signature attack"
 git push origin master

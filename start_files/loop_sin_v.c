@@ -12,8 +12,8 @@ int main()
     sleep(5);
    time (&rawtime);
    timeinfo = localtime (&rawtime);
-   fp=fopen("version_record_2.txt","a");
-   +fprintf(fp,"Version 1.0 %s", asctime(timeinfo));
+   fp=fopen("version_record.txt","a");
+   +fprintf(fp,"Version 2.0 %s", asctime(timeinfo));
    fclose(fp);
    }
  

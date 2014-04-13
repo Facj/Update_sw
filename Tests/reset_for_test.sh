@@ -22,6 +22,12 @@ USER2=Facj2
  cd /home/fatima/Raspi_sw/Update_sw/Tests
  cp ../start_files/loop.c /home/fatima/Raspi_sw/$USER1/Repo1/loop.c
  cp ../start_files/loop_2.c /home/fatima/Raspi_sw/$USER1/Repo1/loop_2.c
+ cp ../start_files/loop_d.c /home/fatima/Raspi_sw/$USER1/Repo1/loop_d.c
+ cp ../start_files/loop_d_2.c /home/fatima/Raspi_sw/$USER1/Repo1/loop_d_2.c
+ cp ../start_files/Makefile /home/fatima/Raspi_sw/$USER1/Repo1/Makefile
+ cp ../start_files/dynamic_c.h /home/fatima/Raspi_sw/$USER1/Repo1/dynamic_c.h
+
+
 
  cd /home/fatima/Raspi_sw/$USER1/Repo1
  rm loop_3.c
@@ -63,7 +69,10 @@ USER2=Facj2
 cd /home/fatima/Raspi_sw/Update_sw/Tests
 cp ../start_files/loop.c /home/fatima/Raspi_sw/$USER2/Repo1/loop.c
 cp ../start_files/loop_2.c /home/fatima/Raspi_sw/$USER2/Repo1/loop_2.c
-
+cp ../start_files/loop_d.c /home/fatima/Raspi_sw/$USER2/Repo1/loop_d.c
+cp ../start_files/loop_d_2.c /home/fatima/Raspi_sw/$USER2/Repo1/loop_d_2.c
+cp ../start_files/Makefile /home/fatima/Raspi_sw/$USER2/Repo1/Makefile
+cp ../start_files/dynamic_c.h /home/fatima/Raspi_sw/$USER2/Repo1/dynamic_c.h
 
 if $push; then
 	cd /home/fatima/Raspi_sw/$USER2/Repo1
@@ -73,7 +82,7 @@ else
 	cd /home/fatima/Raspi_sw/$USER2/Repo1 
 	rm loop_3.c
 	touch loop_3.c 
-	git add loop.c loop_2.c loop_3.c
+	git add loop.c loop_2.c loop_3.c loop_d.c loop_d_2.c Makefile dynamic_c.h 
 	git commit -m "Restart"  >/dev/null 2>&1
 	git push origin master >/dev/null 2>&1
 

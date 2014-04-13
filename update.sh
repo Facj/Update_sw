@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source /home/pi/git/func.cfg
-source /home/pi/git/update.cfg
+source /home/pi/git/Update_sw/func.cfg
+source /home/pi/git/Update_sw/update.cfg
 #source /home/pi/git/check_wifi.sh
 cd /home/pi/git/Repo1
 #source /home/fatima/Raspi_sw/func.cfg
@@ -122,10 +122,12 @@ else
     
     #Compilation
     if $compile; then
+	echo "Check update files"
 	check_updated_files $new_v #Not necessary if you are not going to compile
 	echo ${changed_files[*]}
 	sort_update_files $new_v
 	get_current_versions
+	echo "Let's compile"
     	compile_update $new_v
 
 	if [ $? -ne 0 ]; then 
@@ -137,16 +139,17 @@ else
 				exit 1
 			fi
 		fi
-	fi 
+	
                  
-        successful_update  #Even there is dynamic error we are not rolling back
-        #Change running version
-	if $dynamic; then
-	 	change_running_version
+        	successful_update  #Even there is dynamic error we are not rolling back
+       		 #Change running version
+		if $dynamic; then
+	 		change_running_version
+		fi
 	fi
 	    
     else
-      successful_update
+      	successful_update
     fi
     
        

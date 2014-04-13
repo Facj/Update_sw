@@ -10,6 +10,7 @@ cd /home/fatima/Raspi_sw/Facj/Repo1
 #-----------------------------------------------------------------------------------------------
 
 read -p "Make sure you have run reset_for_test and press key..."
+git pull origin master
 
         #Update loop.c
 	grep -Po 'Version \K[^ ]*' loop.c >/dev/null 2>&1

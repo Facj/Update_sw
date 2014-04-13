@@ -17,7 +17,7 @@ git pull origin master
 	current_version=$(grep -Po 'Version \K[^ ]*' loop.c)
         #echo $current_version
 	last_dot=(${current_version//./ })
-	sed -i 's/'$current_version'*./'${last_dot[0]}'.'${last_dot[1]}'.'$((last_dot[2]+1))' /' loop.c
+	sed -i 's/'$current_version'*./'${last_dot[0]}'.'$((last_dot[1]+1))' /' loop.c
         
         #And a we add an incorrect line on the bottom 
         echo "oh what" >>loop.c        
@@ -27,13 +27,13 @@ git pull origin master
 	current_version=$(grep -Po 'Version \K[^ ]*' loop_2.c)
         #echo $current_version
 	last_dot=(${current_version//./ })
-	sed -i 's/'$current_version'*./'${last_dot[0]}'.'${last_dot[1]}'.'$((last_dot[2]+1))' /' loop_2.c   
+	sed -i 's/'$current_version'*./'${last_dot[0]}'.'$((last_dot[1]+1))' /' loop_2.c   
           
  
 
 	git add loop.c loop_2.c
-	git commit -m "v.${last_dot[0]}.${last_dot[1]}.$((last_dot[2]+1))"
-	git tag -s v.${last_dot[0]}.${last_dot[1]}.$((last_dot[2]+1)) -m "v.${last_dot[0]}.${last_dot[1]}.$((last_dot[2]+1))"
+	git commit -m "v.${last_dot[0]}.$((last_dot[1]+1))"
+	git tag -s v.${last_dot[0]}.$((last_dot[1]+1)) -m "v.${last_dot[0]}.$((last_dot[1]+1))"
 
 
 	#Push changes to the repository
