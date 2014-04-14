@@ -110,24 +110,24 @@ then
     echo "Not update available"
     #return 1
 else
-   echo "Available update" $new_v        
+   echo "Available update" #$new_v        
    #New commitment
     git merge FETCH_HEAD --no-edit  >/dev/null 2>&1
     if [ $? -ne 0 ]
     then
-	echo "git merge failed"
+	echo "Merging failed"
         update_failed $new_v "Merging conflict"  #Only if files are modified in Raspberry Pi?
-        #return 1 
+        exit 1 
     fi
     
     #Compilation
     if $compile; then
-	echo "Check update files"
+	echo "Checking updated files..."
 	check_updated_files $new_v #Not necessary if you are not going to compile
 	echo ${changed_files[*]}
 	sort_update_files $new_v
 	get_current_versions
-	echo "Let's compile"
+	echo "Compiling..."
     	compile_update $new_v
 
 	if [ $? -ne 0 ]; then 
