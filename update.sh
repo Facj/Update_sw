@@ -1,9 +1,9 @@
 #!/bin/bash
 
-source /home/pi/git/Update_sw/func.cfg
-source /home/pi/git/Update_sw/update.cfg
+source /home/fatima/Raspi_sw/Update_sw/func.cfg
+source /home/fatima/Raspi_sw/Update_sw/update.cfg
 #source /home/pi/git/check_wifi.sh
-cd /home/pi/git/Repo1
+cd /home/fatima/Raspi_sw/Repo1
 #source /home/fatima/Raspi_sw/func.cfg
 usage () {
 	echo -e "Automatic software updater for Raspberry Pi that provides secure and dynamic features by default.\n"
@@ -95,7 +95,7 @@ echo "SOFTWARE UPDATE"
 date
 
 #Check if network connection is available and fix it if possible.
-bash ../check_wifi.sh
+bash ../Update_sw/check_wifi.sh   ####CHANGED !!
 if [ $? -ne 0 ]
 then
     exit 1
