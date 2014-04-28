@@ -15,7 +15,6 @@ for x in "${c_files[@]}"; do
 	prid2=( $(pidof $x) )
 	echo "Before  ${#prid1[@]} After ${#prid2[@]}" 
 	if [ ${#prid1[@]} -lt ${#prid2[@]} ]; then
-		#echo "$x running"
 		kill ${prid2[0]} 
 		current_c_versions[$y]="No"
 		#echo "version not provided"
@@ -23,7 +22,7 @@ for x in "${c_files[@]}"; do
 	else
 		 #echo "version provided"
    		output=$(./$x -v)
-		version=$(echo $output | grep -Po '(version )\d+(?:\.\d+){1}')
+		version=$(echo "Program version 9.9.9.9"| grep -Po '(version )\d+(?:\.\d+){1}')
 		version=$(echo $version | grep -Po '\d+(?:\.\d+){1}')
                 dyn=$(echo $output | grep "Dynamically updatable")
 		compatible=$(echo $output | grep -Po '(Compatible from )\d+(?:\.\d+){1}')

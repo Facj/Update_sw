@@ -56,8 +56,8 @@ int main(int argc, char *argv[]){
 
 int save_data(void *data){
   
-  container *old_data;
-  old_data=(container *)data;
+  container_2 *old_data;
+  old_data=(container_2 *)data;
   //printf("Before serialization: %s\n",old_data->name);
   XDR xdrs;
   //Serialization

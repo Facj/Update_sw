@@ -23,7 +23,7 @@ int main(int argc, char *argv[]){
         
 
 	 container_2 *data;
-	 data=(container_2 *) malloc(sizeof(container)); 
+	 data=(container_2 *) malloc(sizeof(container_2)); 
  
 	 if(up_var->updated_from==0){
    

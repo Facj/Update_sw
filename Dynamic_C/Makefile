@@ -30,5 +30,5 @@ up_2: up_2.c
 	$(CC) $(CFLAGS) $(LFLAGS) $^ -o $@
 
 clean:
-	rm -f structures.c structures.h updatable
+	rm -f structures.c structures.h updatable up_2
 

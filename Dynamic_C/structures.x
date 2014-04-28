@@ -15,14 +15,10 @@ struct update_variables{
 
 struct container{
   string name<50>;
-  float age;
-  string address<100>;
-  int option;
+  float num_executions;
 };
 
 struct container_2{
-  char *name;
-  int  age;
-  char *address;
-  int option;
+  string name<50>;
+  int  num_executions;
 };

@@ -192,8 +192,8 @@ void *update_point(int up_id, void **data){
     return data;
   }
   if(up_var->update_available){
-     
-    save_data(data);
+      
+    save_data(data); //It may fail
     up_var->updated_from=up_id;
     up_var->update_in_progress=1;
     up_var->update_available=0;

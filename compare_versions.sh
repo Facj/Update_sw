@@ -49,8 +49,8 @@ function compare_versions()
 
 
 
-version1="1.2" #New version compatible from
-version2="1.3.1"  #Old running version 
+version1="1.3" #New version compatible from
+version2="7.9"  #Old running version 
 
 compare_versions $version1 $version2
 if [ $? -eq 0 ]

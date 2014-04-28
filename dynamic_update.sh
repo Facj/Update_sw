@@ -17,20 +17,22 @@ function change_running_version()
     index=0
     temp=0
     for x in "${compiled_c_files[@]}"; do
+	exec=$x
     	prid=$(pidof $x)
 	 case "$prid" in
-             [0-9]*) echo "$x running"
+             [0-9]*) echo "$x running index $index"
 	        	dynamic_update_supported $index #check if dynamic updates are supported by both old and new version
 	                 if [ $? -eq 0 ]
 		          then
 				kill -s SIGUSR2 $prid
 	                        ((signaled_processes++))
-				temp=$(date --date="+30 second" +%s)
+				temp=$(date --date="+60 second" +%s)
 			else
 				echo "Dynamic update not supported" 
 				if $forced; then
 				kill $prid
-			 	./$x & 
+				echo "Forcd $exec update"
+			 	./$exec & 
 				
 			        fi
 			fi
@@ -41,15 +43,17 @@ function change_running_version()
 	done
 
 now=$(date +%s)
-while [ "$now" -lt "$temp" ]; do
+echo "Waiting for updated processes..."
+while [ "$now" -lt "$temp" ] && [ $updated_processes -lt $signaled_processes ]; do
 	now=$(date +%s)	
-	echo "Waiting for updated processes.."
+	
 done
 
 if [ $updated_processes -lt $signaled_processes ]; then
 	echo "update_failed" $1 "Dynamic update failure"
 	return 1
 else
+	echo "Dynamic update successful"
 	return 0
 fi
 
@@ -66,6 +70,7 @@ fi
 function dynamic_update_supported()
 {
        exec=${compiled_c_files[$1]}
+	echo $exec
         echo "Get version of $exec"
 	#Check if current version supports dynamic updates
         echo "Running version ${current_c_versions[$1]}"
@@ -164,7 +169,8 @@ typeset current_c_versions
 compiled_c_files[0]="updatable"
 compiled_c_files[1]="up_2"
 current_c_versions[0]="4.8"
-current_c_versions[0]="1.3"
+current_c_versions[1]="1.9"
+forced=false
 change_running_version
 
 
