@@ -1,10 +1,10 @@
 #!/bin/bash
 
+version="1.0";
 source func.cfg   #In Raspberry Pi it requires the whole path
 source update.cfg
 #source /home/pi/git/check_wifi.sh
 cd $repository_path
-#pwd
 #source /home/fatima/Raspi_sw/func.cfg
 usage () {
 	echo -e "Automatic software updater for Raspberry Pi that provides secure and dynamic features by default.\n"
@@ -25,10 +25,6 @@ usage () {
 	echo "-h                        Help on the usage"
 }
 
-#Secure feature enabled by default
-#compile=true
-#dynamic=true
-#key_check=true;
 
 
 #Check parameters
@@ -92,7 +88,7 @@ done
 
 
 #Update process
-echo "SOFTWARE UPDATE"
+echo "SOFTWARE UPDATER "  $version
 date
 
 #Check if network connection is available and fix it if possible.
@@ -111,7 +107,7 @@ then
     return 0
 fi
 
-
+cd $repository_path
 check_available_update $key_check
 if [ $? -ne 0 ]
 then
