@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.4 
+version="4.2"  
 source func.cfg   #In Raspberry Pi it requires the whole path
 source update.cfg
 #source /home/pi/git/check_wifi.sh
@@ -57,19 +57,19 @@ while getopts ":hcdtarkxsf:" option; do
 	    ;;
         f)
 	    case "$2" in
-		[0-9].1.4  change_frequency m $2 
-                        exit 1.4 
+		[0-9]*) change_frequency m $2 
+                        exit 1;;
 		h|d|m) 
 		    case "$3" in
-			[0-9].1.4  change_frequency $2 $3
+			[0-9]*)  change_frequency $2 $3
 			    exit 0
 			    ;;
-			.1.4 echo "Value must be an integer"
-			    exit 1.4   
+			*)echo "Value must be an integer"
+			    exit 1   
 		    esac;;
 		
-		.1.4  echo "Use -h for help on the usage"
-		    exit 1.4         
+		*)  echo "Use -h for help on the usage"
+		    exit 1         
 		
 	    esac
 	    ;;
@@ -128,7 +128,7 @@ else
     if $compile; then
 	echo "Checking updated files..."
 	check_updated_files $new_v #Not necessary if you are not going to compile
-	#echo ${changed_files[.1.4 
+	#echo ${changed_files[*]} 
 	sort_update_files $new_v
 	get_current_versions
 	echo "Compiling..."
