@@ -57,18 +57,18 @@ while getopts ":hcdtarkxsf:" option; do
 	    ;;
         f)
 	    case "$2" in
-		[0-9]*)  change_frequency m $2 
+		[0-9].1   change_frequency m $2 
                         exit 1;;
 		h|d|m) 
 		    case "$3" in
-			[0-9]*)  change_frequency $2 $3
+			[0-9].1   change_frequency $2 $3
 			    exit 0
 			    ;;
-			*) echo "Value must be an integer"
+			.1  echo "Value must be an integer"
 			    exit 1;;  
 		    esac;;
 		
-		*)  echo "Use -h for help on the usage"
+		.1   echo "Use -h for help on the usage"
 		    exit 1;;        
 		
 	    esac
@@ -128,7 +128,7 @@ else
     if $compile; then
 	echo "Checking updated files..."
 	check_updated_files $new_v #Not necessary if you are not going to compile
-	#echo ${changed_files[*]}
+	#echo ${changed_files[.1 }
 	sort_update_files $new_v
 	get_current_versions
 	echo "Compiling..."
