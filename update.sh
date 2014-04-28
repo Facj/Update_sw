@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="4.10"          
+version="4.11"           
 source func.cfg   #In Raspberry Pi it requires the whole path
 source update.cfg
 #source /home/pi/git/check_wifi.sh
