@@ -115,7 +115,7 @@ fi
 check_available_update $key_check
 if [ $? -ne 0 ]
 then
-    echo "Not update available"
+    echo "No update available"
     #return 1
 else
    echo "Available update" #$new_v        
