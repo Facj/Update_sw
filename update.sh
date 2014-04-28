@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="4.12"            
+version="4.13"             
 source func.cfg   #In Raspberry Pi it requires the whole path
 source update.cfg
 #source /home/pi/git/check_wifi.sh
@@ -104,7 +104,7 @@ if [ $? -ne 0 ]
 then
     echo "Self-updating..."
     bash update.sh
-    return 0
+    exit 0
 fi
 
 cd $repository_path
