@@ -27,11 +27,11 @@ int update_successful;
 /**
   @brief Handles update notifications                              
   
-  Signal handler for system signal used for update notifications (normally SIGUSR2 but it can be chosen by developer).
-  It sets the flag that will be checked by update_point function so the update takes place at a safe moment of the execution.
-  So as dynamic updates are available the following line should be included in the source code:
-        
-  signal(SIGUSR2,update_notification); 
+  Signal handler for system signal used for update and update success notifications (SIGUSR2).
+  In case of update notification from the update agent, it sets the flag that will be checked by 
+  update_point function so the update takes place at a safe moment of the execution.
+  In case of success notification from the updated version, the correspondig flag is set so as 
+  the process finishes its execution.
 
 */
 
@@ -57,7 +57,14 @@ void signal_handler(int sig, siginfo_t *siginfo, void *context)
 
 }
 
+/************************************************************************************************/
+/**
+  @brief Sets signal handler for SIGUSR2                           
+  
+  It sets the signal handler and the sigaction struct that will be used in order to get the update
+  agent pid for future notifications.
 
+*/
 
 void set_signal_handler(){
 
@@ -70,7 +77,14 @@ void set_signal_handler(){
 }
 
 
+/************************************************************************************************/
+/**
+  @brief Initializes update status                          
+  
+  Update status is initialized, either from serialized state data or , if not available, directly set.
+ 
 
+*/
 
 void check_update_status(){
 
@@ -119,6 +133,14 @@ void check_update_status(){
 }
 
 
+/************************************************************************************************/
+/**
+  @brief Saves update variables for the new version    
+  
+  Update status variables are serialized in up_program_name.ser file.
+
+*/
+
 void save_update_status(){
 
 
@@ -153,12 +175,24 @@ void save_update_status(){
   The function receives a pointer to the struct containing data of the running  version and returns a pointer to data necessary for the execution of the new version.
   Modifications could include adding/removing/modifying variables or could simply do nothing.
 
-  @param old_data Pointer to the struct containing data of the running version
+  @param data Pointer to the struct containing data of the running version
 
 */
 
 void *restore_data(void *data);
 
+
+/*************************************************************************************************/
+/**
+  @brief Saves program data to be used by the next version                              
+
+  The prototype is defined here. However this function should be implemented by the developer.
+  The function receives a pointer to the struct containing data of the running  version.
+ 
+
+  @param data Pointer to the struct containing data of the running version
+
+*/
 
 int save_data(void *data);
 
@@ -168,11 +202,13 @@ int save_data(void *data);
   
   If the running process is a dynamic update that continues from this point it sets update_in_progress flag to 0.
   If the running process is not a dynamic update, checks if there is a new update available and prepares its execution. 
+  Then it waits for notification from the new version. If successful , it finishes. If not, it continues its execution 
+  as if nothing had happened
 
   @param up_id Identifier of the update point from where the function is called
-  @param data Pointer to the struct containing the data of the old version 
+  @param data Pointer to the struct containing the data of the old version.
 
-  @returns 0 if update in progress, 1 if update available, 2 in any other case. 
+  @returns data struct if the process has to continue its execution and NULL otherwise. 
 
 */
 
