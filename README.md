@@ -28,14 +28,13 @@ BUILD UPDATABLE CODE:
  In order to build dynamically updatable code compatible with the system, the following instructions must be followed.
 
 	1.Included files:		
-		-Structures.x file. Definition of structs of data of the new and the old version,together with the one containing update
-                variables, already provided. Structs can also be declared in a different .x file.
-		-Makefile. As well as compiling instructions it includes rpcgen statements to create the serialization functions. Any other 			library to link can be inserted.
+		-Structures.x file. Definition of structs of data of the new and the old version,together with the one containing update variables, already provided. Structs can also be declared in a different .x file.
+		-Makefile. As well as compiling instructions it includes rpcgen statements to create the serialization functions. Any other library to link can be inserted.
 		-Unittest. Including unittest for your source files. It has to be name test_<program_name>.c
 	2.Code modifications:
-		-Implementation of the option –version so it can be recognised as updatable.• Library headers: Structures.c and dynamic_c.h 		          have to included in the source code.
+		-Implementation of the option –version so it can be recognised as updatable.• Library headers: Structures.c and dynamic_c.h have to included in the source code.
 		-Initialization of the variable PROGRAM_NAME after which serialization files will be named.
-		-Update status checking at the beginning of the program. It is performed using the function of the same name implemented in 			 the library.
+		-Update status checking at the beginning of the program. It is performed using the function of the same name implemented in the library.
 		-Update points and flow control with if statements.
-		-Implementation of functions save_data and restore_data. If no modifications to the data are required, the functions include 			 just the serialization/deserialization.
+		-Implementation of functions save_data and restore_data. If no modifications to the data are required, the functions include just the serialization/deserialization.
 
